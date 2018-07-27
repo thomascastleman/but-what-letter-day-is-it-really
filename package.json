@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/thomascastleman/but-what-letter-day-is-it-really/issues"
   },
-  "homepage": "https://github.com/thomascastleman/but-what-letter-day-is-it-really#readme"
+  "homepage": "https://github.com/thomascastleman/but-what-letter-day-is-it-really#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "ical": "^0.5.0",
+    "moment": "^2.22.2",
+    "mustache-express": "^1.2.7"
+  }
 }
