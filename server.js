@@ -90,14 +90,46 @@ app.post('/letterByDate', function(req, res) {
 app.post('/infoByDate', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date).startOf('day');
-		var weekday = d.format('dddd');
+		if (d) {
+			var dayInfo = {
+				schedule: schedule[d.weekday()]
+			};
 
-		console.log(schedule[d.weekday()]);
+			// use the weekday to get schedule info, then convert all offsets into actual times, add period attributes to the classes, and send, with letter info
 
-		
-		// use the weekday to get schedule info, then convert all offsets into actual times, add period attributes to the classes, and send, with letter info
+			// if schedule exists for this day
+			if (dayInfo.schedule) {
+				// attempt to get letter day info for this day
+				getLetterDayByDate(d, function(data) {
+					if (data) {
+						dayInfo.letter = data.letter;
+						dayInfo.rotation = data.rotation;
+					}
 
+					var r = 0;
 
+					// for each event in the schedule that day
+					for (var i = 0; i < dayInfo.schedule.length; i++) {
+						var ev = dayInfo.schedule[i];
+
+						// if class period, attempt to classify using rotation
+						if (ev.name == "CLASS" && dayInfo.rotation) {
+							ev.period = dayInfo.rotation[r++];
+						}
+
+						// convert event times relative to requested date
+						ev.start = d.clone().add(ev.start, 'minutes').format('YYYY-MM-DD hh:mm A');
+						ev.end = d.clone().add(ev.end, 'minutes').format('YYYY-MM-DD hh:mm A');
+					}
+
+					res.send(dayInfo);
+				});
+			} else {
+				res.send(undefined);
+			}
+		} else {
+			res.send(undefined);
+		}
 	} else {
 		res.send(undefined);
 	}
