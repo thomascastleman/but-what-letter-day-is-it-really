@@ -1,0 +1,19 @@
+{
+  "name": "but-what-letter-day-is-it-really",
+  "version": "1.0.0",
+  "description": "A service to reliably give information about the STAB schedule",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomascastleman/but-what-letter-day-is-it-really.git"
+  },
+  "author": "Thomas Castleman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thomascastleman/but-what-letter-day-is-it-really/issues"
+  },
+  "homepage": "https://github.com/thomascastleman/but-what-letter-day-is-it-really#readme"
+}
