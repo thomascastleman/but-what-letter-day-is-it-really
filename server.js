@@ -8,6 +8,7 @@ var fs				= require('fs');
 var creds			= require('./credentials.js');
 
 var app = express();
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.engine('html', mustacheExpress());
 app.use('/', express.static('views'));
@@ -66,9 +67,21 @@ function getLetterDayByDate(date, callback) {
 	});
 }
 
-// get today's letter and rotation
+// get today's letter and rotation info
 app.get('/letterToday', function(req, res) {
 	getLetterDayByDate(moment(), function(data) {
 		res.send(data);
 	});
+});
+
+// get letter / rotation info for a given date
+app.post('/letterOnDate', function(req, res) {
+	if (req.body.date) {
+		var d = moment(req.body.date);
+		getLetterDayByDate(d, function(data) {
+			res.send(data);
+		});
+	} else {
+		res.send(undefined);
+	}
 });
