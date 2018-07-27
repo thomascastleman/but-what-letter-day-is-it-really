@@ -1,204 +1,187 @@
 {
-	"weekdays": [
-		{
-			"dayName": "Monday",
-			"events": [
-				{
-					"name": "class",
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "class",
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "lunch",
-					"start": 720,
-					"end": 815
-				},
-				{
-					"name": "x block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "class",
-					"start": 860,
-					"end": 935
-				}
-			]
-		},
-		{
-			"dayName": "Tuesday",
-			"events": [
-				{
-					"name": "class",
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "class",
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "lunch",
-					"start": 720,
-					"end": 815
-				},
-				{
-					"name": "x block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "class",
-					"start": 860,
-					"end": 935
-				}
-			]
-		},
-		{
-			"dayName": "Wednesday",
-			"events": [
-				{
-					"name": "class",
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "class",
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "lunch",
-					"start": 720,
-					"end": 815
-				},
-				{
-					"name": "x block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "class",
-					"start": 860,
-					"end": 935
-				}
-			]
-		},
-		{
-			"dayName": "Thursday",
-			"events": [
-				{
-					"name": "class",
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "class",
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "lunch",
-					"start": 720,
-					"end": 815
-				},
-				{
-					"name": "x block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "class",
-					"start": 860,
-					"end": 935
-				}
-			]
-		},
-		{
-			"dayName": "Friday",
-			"events": [
-				{
-					"name": "class",
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "class",
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "lunch",
-					"start": 720,
-					"end": 815
-				},
-				{
-					"name": "x block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "class",
-					"start": 860,
-					"end": 935
-				}
-			]
-		}
-	]
+	"1": [
+			{
+				"name": "CLASS",
+				"start": 525,
+				"end": 600
+			},
+			{
+				"name": "ADVISORY",
+				"start": 600,
+				"end": 620
+			},
+			{
+				"name": "BREAK",
+				"start": 620,
+				"end": 645
+			},
+			{
+				"name": "CLASS",
+				"start": 645,
+				"end": 720
+			},
+			{
+				"name": "LUNCH",
+				"start": 720,
+				"end": 815
+			},
+			{
+				"name": "X BLOCK",
+				"start": 815,
+				"end": 860
+			},
+			{
+				"name": "CLASS",
+				"start": 860,
+				"end": 935
+			}
+		],
+	"2": [
+			{
+				"name": "CLASS",
+				"start": 525,
+				"end": 600
+			},
+			{
+				"name": "ADVISORY",
+				"start": 600,
+				"end": 620
+			},
+			{
+				"name": "BREAK",
+				"start": 620,
+				"end": 645
+			},
+			{
+				"name": "CLASS",
+				"start": 645,
+				"end": 720
+			},
+			{
+				"name": "LUNCH",
+				"start": 720,
+				"end": 815
+			},
+			{
+				"name": "X BLOCK",
+				"start": 815,
+				"end": 860
+			},
+			{
+				"name": "CLASS",
+				"start": 860,
+				"end": 935
+			}
+		],
+	"3": [
+			{
+				"name": "CLASS",
+				"start": 525,
+				"end": 600
+			},
+			{
+				"name": "ADVISORY",
+				"start": 600,
+				"end": 620
+			},
+			{
+				"name": "BREAK",
+				"start": 620,
+				"end": 645
+			},
+			{
+				"name": "CLASS",
+				"start": 645,
+				"end": 720
+			},
+			{
+				"name": "LUNCH",
+				"start": 720,
+				"end": 815
+			},
+			{
+				"name": "X BLOCK",
+				"start": 815,
+				"end": 860
+			},
+			{
+				"name": "CLASS",
+				"start": 860,
+				"end": 935
+			}
+		],
+	"4": [
+			{
+				"name": "CLASS",
+				"start": 525,
+				"end": 600
+			},
+			{
+				"name": "ADVISORY",
+				"start": 600,
+				"end": 620
+			},
+			{
+				"name": "BREAK",
+				"start": 620,
+				"end": 645
+			},
+			{
+				"name": "CLASS",
+				"start": 645,
+				"end": 720
+			},
+			{
+				"name": "LUNCH",
+				"start": 720,
+				"end": 815
+			},
+			{
+				"name": "X BLOCK",
+				"start": 815,
+				"end": 860
+			},
+			{
+				"name": "CLASS",
+				"start": 860,
+				"end": 935
+			}
+		],
+	"5": [
+			{
+				"name": "CLASS",
+				"start": 525,
+				"end": 600
+			},
+			{
+				"name": "ADVISORY",
+				"start": 600,
+				"end": 620
+			},
+			{
+				"name": "BREAK",
+				"start": 620,
+				"end": 645
+			},
+			{
+				"name": "CLASS",
+				"start": 645,
+				"end": 720
+			},
+			{
+				"name": "LUNCH",
+				"start": 720,
+				"end": 815
+			},
+			{
+				"name": "X BLOCK",
+				"start": 815,
+				"end": 860
+			},
+			{
+				"name": "CLASS",
+				"start": 860,
+				"end": 935
+			}
+		]
 }

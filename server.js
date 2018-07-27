@@ -75,12 +75,29 @@ app.get('/letterToday', function(req, res) {
 });
 
 // get letter / rotation info for a given date
-app.post('/letterOnDate', function(req, res) {
+app.post('/letterByDate', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date);
 		getLetterDayByDate(d, function(data) {
 			res.send(data);
 		});
+	} else {
+		res.send(undefined);
+	}
+});
+
+// get all possible schedule info for a given weekday date
+app.post('/infoByDate', function(req, res) {
+	if (req.body.date) {
+		var d = moment(req.body.date).startOf('day');
+		var weekday = d.format('dddd');
+
+		console.log(schedule[d.weekday()]);
+
+		
+		// use the weekday to get schedule info, then convert all offsets into actual times, add period attributes to the classes, and send, with letter info
+
+
 	} else {
 		res.send(undefined);
 	}
