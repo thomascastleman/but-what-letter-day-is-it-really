@@ -14,6 +14,7 @@ app.engine('html', mustacheExpress());
 app.use('/', express.static('views'));
 
 var schedule;
+var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;
 
 fs.readFile('testschedule.json', 'UTF8', function(err, data) {
 	if (err) throw err; 	// temp debug
@@ -30,7 +31,6 @@ function getLetterDayByDate(date, callback) {
 	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, data) {
 		if (err) throw err;	// temp, debug
 
-		var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;
 		var letter, rotation;
 
 		// iterate over events
@@ -125,8 +125,8 @@ function infoByDate(date, callback) {
 				}
 
 				// convert event times relative to requested date
-				ev.start = date.clone().add(ev.start, 'minutes').format('YYYY-MM-DD hh:mm A');
-				ev.end = date.clone().add(ev.end, 'minutes').format('YYYY-MM-DD hh:mm A');
+				ev.start = date.clone().add(ev.start, 'minutes');
+				ev.end = date.clone().add(ev.end, 'minutes');
 
 				// prevent extended blocks for non-extended periods from getting added to day's schedule
 				if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
@@ -169,6 +169,101 @@ app.post('/infoByDate', function(req, res) {
 	}
 });
 
+// get all letter and rotation info for a full week
+function getLetterDaysInWeek(date, callback) {
+	var weekDays = [], count = 0;
+
+	// get week's start and end date
+	var weekStart = date.clone().startOf('week');
+	var weekEnd = date.clone().endOf('week');
+
+	// call ical for calendar data
+	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, data) {
+		if (err) throw err; // temp, debug
+
+		// iterate over events
+		for (var k in data) {
+			if (data.hasOwnProperty(k)) {
+				var ev = data[k];
+
+				var match = isLetterDay.exec(ev.summary);
+
+				// if contains info indicating upper school letter day
+				if (match) {
+					var evDate = moment(ev.start);
+
+					// if event date same as target date
+					if (evDate.isBetween(weekStart, weekEnd)) {
+
+						// extract regex match data
+						weekDays.push({
+							dayName: evDate.format('dddd'),
+							dayIndex: evDate.weekday(),
+							date: evDate,
+							letter: match[1],
+							rotation: [match[2], match[3], match[4]]
+						});
+
+						// if five weekdays found, finish
+						count++;
+						if (count > 4) {
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		callback(weekDays);
+	});
+}
+
+// get all possible schedule info for a full week
+app.post('/infoByWeek', function(req, res) {
+	if (req.body.date) {
+		var d = moment(req.body.date);
+
+		// if successfully parsed date
+		if (d) {
+			// get letter info for full week
+			getLetterDaysInWeek(d, function(data) {
+				// iterate over each day with letter data
+				for (var i = 0; i < data.length; i++) {
+					// get schedule for this weekday
+					var events = schedule.weekDays[data[i].dayIndex];
+					data[i].events = [];
+
+					// format weekday events
+					for (var j = 0; j < events.length; j++) {
+						var ev = events[j];
+						var day = data[i].date;
+
+						// convert start and end times relative to weekdate
+						ev.start = day.clone().startOf('day').add(ev.start, 'minutes');
+						ev.end = day.clone().startOf('day').add(ev.end, 'minutes')
+
+						// determine period if class block
+						if (ev.block && data[i].rotation && ev.block > 0) {
+							ev.period = data[i].rotation[ev.block - 1];
+						}
+
+						// add all events / barring extended blocks for non-extended periods
+						if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
+							data[i].events.push(ev);
+						}
+					}
+				}
+
+				res.send(data);
+			});
+
+		} else {
+			res.send(undefined);
+		}
+	} else {
+		res.send(undefined);
+	}
+});
 
 // get the events occurring at a given time on a given day
 function getEventsByTime(datetime, callback) {
