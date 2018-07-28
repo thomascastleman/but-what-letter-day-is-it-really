@@ -101,6 +101,10 @@ function infoByDate(date, callback) {
 
 	// if schedule exists for this day
 	if (tempSched) {
+		// make copy of events
+		tempSched = tempSched.slice();
+
+
 		// attempt to get letter day info for this day
 		getLetterDayByDate(date, function(data) {
 			// record letter data in response object
@@ -163,6 +167,55 @@ app.post('/infoByDate', function(req, res) {
 		} else {
 			res.send(undefined);
 		}
+	} else {
+		res.send(undefined);
+	}
+});
+
+// get any events happening at the moment
+app.get('/eventsRightNow', function(req, res) {
+	// get current time
+	var now = moment('2018-08-23T13:37:00.000');
+
+	// attempt to pull schedule for today, if exists
+	var sched = schedule.weekDays[now.weekday()];
+
+	// if schedule exists
+	if (sched) {
+		// copy events
+		sched = sched.slice();
+
+		// get letter day / rotation info
+		getLetterDayByDate(now, function(data) {
+			if (data) {
+				var response = {
+					events: []
+				};
+
+				// iterate events
+				for (var i = 0; i < sched.length; i++) {
+					var ev = sched[i];
+
+					// convert start and end times relative to current date
+					ev.start = now.clone().startOf('day').add(ev.start, 'minutes');
+					ev.end = now.clone().startOf('day').add(ev.end, 'minutes');
+
+					// determine period if class block
+					if (ev.block && data.rotation && ev.block > 0) {
+						ev.period = data.rotation[ev.block - 1];
+					}
+
+					// if this event currently happening (and not an extended block for a non-extended period)
+					if ((now.isBetween(ev.start, ev.end) || now.isSame(ev.start) || now.isSame(ev.end)) && !(ev.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
+						response.events.push(ev);
+					}
+				}
+
+				res.send(response);
+			} else {
+				res.send(undefined);
+			}
+		});
 	} else {
 		res.send(undefined);
 	}
