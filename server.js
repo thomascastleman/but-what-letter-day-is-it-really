@@ -86,55 +86,80 @@ app.post('/letterByDate', function(req, res) {
 	}
 });
 
+// get all schedule info for a given date, if any
+function infoByDate(date, callback) {
+	// reset date to start of day (12am)
+	date = date.startOf('day');
+
+	// start constructing all info for given day
+	var dayInfo = {
+		schedule: []
+	};
+
+	// get schedule skeleton for this weekday
+	var tempSched = schedule.weekDays[date.weekday()];
+
+	// if schedule exists for this day
+	if (tempSched) {
+		// attempt to get letter day info for this day
+		getLetterDayByDate(date, function(data) {
+			// record letter data in response object
+			if (data) {
+				dayInfo.letter = data.letter;
+				dayInfo.rotation = data.rotation;
+			}
+
+			var r = 0;
+
+			// for each event in the schedule that day
+			for (var i = 0; i < tempSched.length; i++) {
+				var ev = tempSched[i];
+
+				// if class period, attempt to classify using rotation
+				if (ev.block && dayInfo.rotation && ev.block > 0) {
+					ev.period = dayInfo.rotation[ev.block - 1];
+				}
+
+				// convert event times relative to requested date
+				ev.start = date.clone().add(ev.start, 'minutes').format('YYYY-MM-DD hh:mm A');
+				ev.end = date.clone().add(ev.end, 'minutes').format('YYYY-MM-DD hh:mm A');
+
+				// prevent extended blocks for non-extended periods from getting added to day's schedule
+				if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
+					dayInfo.schedule.push(ev);
+				}
+			}
+
+			callback(dayInfo);
+		});
+	} else {
+		callback(undefined);
+	}
+}
+
+// get info about today's schedule
+app.get('/infoToday', function(req, res) {
+	// establish current time
+	var now = moment();
+
+	// get schedule info for today
+	infoByDate(now, function(data) {
+		res.send(data);
+	});
+});
+
 // get all possible schedule info for a given weekday date
 app.post('/infoByDate', function(req, res) {
 	if (req.body.date) {
-		var d = moment(req.body.date).startOf('day');
+		// parse date
+		var d = moment(req.body.date);
+
+		// if successfully parsed date
 		if (d) {
-			// start constructing all info for given day
-			var dayInfo = {
-				schedule: []
-			};
-
-			// get schedule skeleton for this weekday
-			var tempSched = schedule.weekDays[d.weekday()];
-
-			// if schedule exists for this day
-			if (tempSched) {
-				// attempt to get letter day info for this day
-				getLetterDayByDate(d, function(data) {
-					// record letter data in response object
-					if (data) {
-						dayInfo.letter = data.letter;
-						dayInfo.rotation = data.rotation;
-					}
-
-					var r = 0;
-
-					// for each event in the schedule that day
-					for (var i = 0; i < tempSched.length; i++) {
-						var ev = tempSched[i];
-
-						// if class period, attempt to classify using rotation
-						if (ev.block && dayInfo.rotation && ev.block > 0) {
-							ev.period = dayInfo.rotation[ev.block - 1];
-						}
-
-						// convert event times relative to requested date
-						ev.start = d.clone().add(ev.start, 'minutes').format('YYYY-MM-DD hh:mm A');
-						ev.end = d.clone().add(ev.end, 'minutes').format('YYYY-MM-DD hh:mm A');
-
-						// prevent extended blocks for non-extended periods from getting added to day's schedule
-						if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
-							dayInfo.schedule.push(ev);
-						}
-					}
-
-					res.send(dayInfo);
-				});
-			} else {
-				res.send(undefined);
-			}
+			// get schedule info for given date
+			infoByDate(d, function(data) {
+				res.send(data);
+			});
 		} else {
 			res.send(undefined);
 		}
