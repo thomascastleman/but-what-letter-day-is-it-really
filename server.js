@@ -143,11 +143,8 @@ function infoByDate(date, callback) {
 
 // get info about today's schedule
 app.get('/infoToday', function(req, res) {
-	// establish current time
-	var now = moment();
-
 	// get schedule info for today
-	infoByDate(now, function(data) {
+	infoByDate(moment(), function(data) {
 		res.send(data);
 	});
 });
@@ -172,13 +169,11 @@ app.post('/infoByDate', function(req, res) {
 	}
 });
 
-// get any events happening at the moment
-app.get('/eventsRightNow', function(req, res) {
-	// get current time
-	var now = moment('2018-08-23T13:37:00.000');
 
+// get the events occurring at a given time on a given day
+function getEventsByTime(datetime, callback) {
 	// attempt to pull schedule for today, if exists
-	var sched = schedule.weekDays[now.weekday()];
+	var sched = schedule.weekDays[datetime.weekday()];
 
 	// if schedule exists
 	if (sched) {
@@ -186,7 +181,7 @@ app.get('/eventsRightNow', function(req, res) {
 		sched = sched.slice();
 
 		// get letter day / rotation info
-		getLetterDayByDate(now, function(data) {
+		getLetterDayByDate(datetime, function(data) {
 			if (data) {
 				var response = {
 					events: []
@@ -197,8 +192,8 @@ app.get('/eventsRightNow', function(req, res) {
 					var ev = sched[i];
 
 					// convert start and end times relative to current date
-					ev.start = now.clone().startOf('day').add(ev.start, 'minutes');
-					ev.end = now.clone().startOf('day').add(ev.end, 'minutes');
+					ev.start = datetime.clone().startOf('day').add(ev.start, 'minutes');
+					ev.end = datetime.clone().startOf('day').add(ev.end, 'minutes');
 
 					// determine period if class block
 					if (ev.block && data.rotation && ev.block > 0) {
@@ -206,16 +201,43 @@ app.get('/eventsRightNow', function(req, res) {
 					}
 
 					// if this event currently happening (and not an extended block for a non-extended period)
-					if ((now.isBetween(ev.start, ev.end) || now.isSame(ev.start) || now.isSame(ev.end)) && !(ev.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
+					if ((datetime.isBetween(ev.start, ev.end) || datetime.isSame(ev.start) || datetime.isSame(ev.end)) && !(ev.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
 						response.events.push(ev);
 					}
 				}
 
-				res.send(response);
+				callback(response);
 			} else {
-				res.send(undefined);
+				callback(undefined);
 			}
 		});
+	} else {
+		callback(undefined);
+	}
+}
+
+// get any events happening at the moment
+app.get('/eventsRightNow', function(req, res) {
+	// get any events scheduled to be happening now
+	getEventsByTime(moment(), function(data) {
+		res.send(data);
+	});
+});
+
+// get any events happening at a given datetime
+app.post('/eventsByTime', function(req, res) {
+	if (req.body.datetime) {
+		// attempt to parse datetime
+		var d = moment(req.body.datetime);
+
+		// if successfully parsed datetime
+		if (d) {
+			getEventsByTime(d, function(data) {
+				res.send(data);
+			});
+		} else {
+			res.send(undefined);
+		}
 	} else {
 		res.send(undefined);
 	}
