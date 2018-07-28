@@ -91,16 +91,19 @@ app.post('/infoByDate', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date).startOf('day');
 		if (d) {
+			// start constructing all info for given day
 			var dayInfo = {
-				schedule: schedule[d.weekday()]
+				schedule: []
 			};
 
-			// use the weekday to get schedule info, then convert all offsets into actual times, add period attributes to the classes, and send, with letter info
+			// get schedule skeleton for this weekday
+			var tempSched = schedule.weekDays[d.weekday()];
 
 			// if schedule exists for this day
-			if (dayInfo.schedule) {
+			if (tempSched) {
 				// attempt to get letter day info for this day
 				getLetterDayByDate(d, function(data) {
+					// record letter data in response object
 					if (data) {
 						dayInfo.letter = data.letter;
 						dayInfo.rotation = data.rotation;
@@ -109,17 +112,22 @@ app.post('/infoByDate', function(req, res) {
 					var r = 0;
 
 					// for each event in the schedule that day
-					for (var i = 0; i < dayInfo.schedule.length; i++) {
-						var ev = dayInfo.schedule[i];
+					for (var i = 0; i < tempSched.length; i++) {
+						var ev = tempSched[i];
 
 						// if class period, attempt to classify using rotation
-						if (ev.name == "CLASS" && dayInfo.rotation) {
-							ev.period = dayInfo.rotation[r++];
+						if (ev.block && dayInfo.rotation && ev.block > 0) {
+							ev.period = dayInfo.rotation[ev.block - 1];
 						}
 
 						// convert event times relative to requested date
 						ev.start = d.clone().add(ev.start, 'minutes').format('YYYY-MM-DD hh:mm A');
 						ev.end = d.clone().add(ev.end, 'minutes').format('YYYY-MM-DD hh:mm A');
+
+						// prevent extended blocks for non-extended periods from getting added to day's schedule
+						if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
+							dayInfo.schedule.push(ev);
+						}
 					}
 
 					res.send(dayInfo);
