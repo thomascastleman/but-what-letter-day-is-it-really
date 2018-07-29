@@ -292,35 +292,32 @@ function getEventsByTime(datetime, callback) {
 		// get letter day / rotation info
 		getLetterDayByDate(datetime, function(data) {
 			if (data) {
-				var response = {
-					events: []
-				};
+				var events = [];
 
 				// iterate events
 				for (var i = 0; i < sched.length; i++) {
-					var scheduleEvent = sched[i];
-					var ev = {
-						name: scheduleEvent.name
+					var event = sched[i];
+
+					// make copy of each event from skeleton with info filled in
+					var eventCopy = {
+						name: event.name,
+						start: datetime.clone().startOf('day').add(event.start, 'minutes'),
+						end: datetime.clone().startOf('day').add(event.end, 'minutes')
 					};
 
-					// convert start and end times relative to current date
-					ev.start = datetime.clone().startOf('day').add(scheduleEvent.start, 'minutes');
-					ev.end = datetime.clone().startOf('day').add(scheduleEvent.end, 'minutes');
-
 					// determine period if class block
-					if (scheduleEvent.block && data.rotation && scheduleEvent.block > 0) {
-						ev.period = data.rotation[scheduleEvent.block - 1];
+					if (event.block && data.rotation && event.block > 0) {
+						eventCopy.period = data.rotation[event.block - 1];
 					}
 
 					// if this event currently happening (and not an extended block for a non-extended period)
-					if ((datetime.isBetween(ev.start, ev.end) || datetime.isSame(ev.start) || datetime.isSame(ev.end)) && !(scheduleEvent.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
-						response.events.push(ev);
+					if ((datetime.isBetween(eventCopy.start, eventCopy.end) || datetime.isSame(eventCopy.start) || datetime.isSame(eventCopy.end)) && !(event.isExtended && schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) == -1)) {
+						events.push(eventCopy);
 					}
 				}
 
-				console.log(schedule.weekDays[datetime.weekday()]);
-
-				callback(response);
+				// send back filled out event data
+				callback({ events: events });
 			} else {
 				callback(undefined);
 			}
