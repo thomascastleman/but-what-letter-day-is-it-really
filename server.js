@@ -353,3 +353,12 @@ app.post('/eventsByTime', function(req, res) {
 		res.send(undefined);
 	}
 });
+
+
+
+// --------------- TESTING ------------------
+
+
+app.get('/calendar', function(req, res) {
+	res.render('calendar.html');
+});

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Schedule Serializer</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
+</head>
+<body>
+	<div id='calendar'></div>
+</body>
+
+<script>
+	$(function() {
+
+	  // page is now ready, initialize the calendar...
+
+	  $('#calendar').fullCalendar({
+	    // weekends: false
+	  })
+
+	});
+</script>
+</html>
