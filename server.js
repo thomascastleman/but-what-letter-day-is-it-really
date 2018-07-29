@@ -197,8 +197,6 @@ function getLetterDaysInWeek(date, callback) {
 
 						// extract regex match data
 						weekDays.push({
-							dayName: evDate.format('dddd'),
-							dayIndex: evDate.weekday(),
 							date: evDate,
 							letter: match[1],
 							rotation: [match[2], match[3], match[4]]
@@ -218,6 +216,24 @@ function getLetterDaysInWeek(date, callback) {
 	});
 }
 
+// get letter / rotation info for a full week
+app.post('/letterByWeek', function(req, res) {
+	if (req.body.date) {
+		var d = moment(req.body.date);
+
+		// if successfully parsed date
+		if (d) {
+			getLetterDaysInWeek(d, function(data) {
+				res.send(data);
+			});
+		} else {
+			res.send(undefined);
+		}
+	} else {
+		res.send(undefined);
+	}
+});
+
 // get all possible schedule info for a full week
 app.post('/infoByWeek', function(req, res) {
 	if (req.body.date) {
@@ -230,8 +246,8 @@ app.post('/infoByWeek', function(req, res) {
 				// iterate over each day with letter data
 				for (var i = 0; i < data.length; i++) {
 					// get schedule for this weekday
-					var events = schedule.weekDays[data[i].dayIndex];
-					data[i].events = [];
+					var events = schedule.weekDays[data[i].date.weekday()];
+					data[i].schedule = [];
 
 					// format weekday events
 					for (var j = 0; j < events.length; j++) {
@@ -249,7 +265,7 @@ app.post('/infoByWeek', function(req, res) {
 
 						// add all events / barring extended blocks for non-extended periods
 						if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
-							data[i].events.push(ev);
+							data[i].schedule.push(ev);
 						}
 					}
 				}
