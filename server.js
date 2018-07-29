@@ -46,7 +46,7 @@ function getLetterDayByDate(date, callback) {
 
 					// if event date same as target date
 					if (evDate.isSame(date, 'day')) {
-						// extract regex match data
+						// extract regex match data (letter and rotation periods)
 						letter = match[1];
 						rotation = [match[2], match[3], match[4]];
 						break;
@@ -91,54 +91,23 @@ function infoByDate(date, callback) {
 	// reset date to start of day (12am)
 	date = date.startOf('day');
 
-	// start constructing all info for given day
-	var dayInfo = {
-		schedule: []
-	};
-
-	// get schedule skeleton for this weekday
-	var tempSched = schedule.weekDays[date.weekday()];
-
-	// if schedule exists for this day
-	if (tempSched) {
-		// make copy of events
-		tempSched = tempSched.slice();
-
-
-		// attempt to get letter day info for this day
-		getLetterDayByDate(date, function(data) {
-			// record letter data in response object
-			if (data) {
-				dayInfo.letter = data.letter;
-				dayInfo.rotation = data.rotation;
-			}
-
-			var r = 0;
-
-			// for each event in the schedule that day
-			for (var i = 0; i < tempSched.length; i++) {
-				var ev = tempSched[i];
-
-				// if class period, attempt to classify using rotation
-				if (ev.block && dayInfo.rotation && ev.block > 0) {
-					ev.period = dayInfo.rotation[ev.block - 1];
-				}
-
-				// convert event times relative to requested date
-				ev.start = date.clone().add(ev.start, 'minutes');
-				ev.end = date.clone().add(ev.end, 'minutes');
-
-				// prevent extended blocks for non-extended periods from getting added to day's schedule
-				if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
-					dayInfo.schedule.push(ev);
-				}
-			}
-
-			callback(dayInfo);
-		});
-	} else {
-		callback(undefined);
-	}
+	// attempt to get letter day info for this day
+	getLetterDayByDate(date, function(data) {
+		// if successfully found letter info
+		if (data) {
+			// callback on letter / rotation / filled-out schedule
+			callback({
+				letter: data.letter,
+				rotation: data.rotation,
+				schedule: fillOutSkeletonSchedule(date, data.rotation)
+			});
+		} else {
+			// callback on just skeleton with dates filled out
+			callback({
+				schedule: fillOutSkeletonSchedule(date, undefined)
+			});
+		}
+	});
 }
 
 // get info about today's schedule
@@ -245,29 +214,8 @@ app.post('/infoByWeek', function(req, res) {
 			getLetterDaysInWeek(d, function(data) {
 				// iterate over each day with letter data
 				for (var i = 0; i < data.length; i++) {
-					// get schedule for this weekday
-					var events = schedule.weekDays[data[i].date.weekday()];
-					data[i].schedule = [];
-
-					// format weekday events
-					for (var j = 0; j < events.length; j++) {
-						var ev = events[j];
-						var day = data[i].date;
-
-						// convert start and end times relative to weekdate
-						ev.start = day.clone().startOf('day').add(ev.start, 'minutes');
-						ev.end = day.clone().startOf('day').add(ev.end, 'minutes')
-
-						// determine period if class block
-						if (ev.block && data[i].rotation && ev.block > 0) {
-							ev.period = data[i].rotation[ev.block - 1];
-						}
-
-						// add all events / barring extended blocks for non-extended periods
-						if (!ev.isExtended || schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) != -1) {
-							data[i].schedule.push(ev);
-						}
-					}
+					// fill out weekday schedule relative to this date / rotation
+					data[i].schedule = fillOutSkeletonSchedule(data[i].date, data[i].rotation);
 				}
 
 				res.send(data);
@@ -283,48 +231,26 @@ app.post('/infoByWeek', function(req, res) {
 
 // get the events occurring at a given time on a given day
 function getEventsByTime(datetime, callback) {
-	// attempt to pull schedule for today, if exists
-	var sched = schedule.weekDays[datetime.weekday()];
+	// get letter day / rotation info
+	getLetterDayByDate(datetime, function(data) {
+		if (data) {
+			// fill out full schedule for this date
+			var allEvents = fillOutSkeletonSchedule(datetime, data.rotation);
+			var currentEvents = [];
 
-	// if schedule exists
-	if (sched) {
-
-		// get letter day / rotation info
-		getLetterDayByDate(datetime, function(data) {
-			if (data) {
-				var events = [];
-
-				// iterate events
-				for (var i = 0; i < sched.length; i++) {
-					var event = sched[i];
-
-					// make copy of each event from skeleton with info filled in
-					var eventCopy = {
-						name: event.name,
-						start: datetime.clone().startOf('day').add(event.start, 'minutes'),
-						end: datetime.clone().startOf('day').add(event.end, 'minutes')
-					};
-
-					// determine period if class block
-					if (event.block && data.rotation && event.block > 0) {
-						eventCopy.period = data.rotation[event.block - 1];
-					}
-
-					// if this event currently happening (and not an extended block for a non-extended period)
-					if ((datetime.isBetween(eventCopy.start, eventCopy.end) || datetime.isSame(eventCopy.start) || datetime.isSame(eventCopy.end)) && !(event.isExtended && schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) == -1)) {
-						events.push(eventCopy);
-					}
+			// filter out events that aren't happening at given datetime
+			for (var i = 0; i < allEvents.length; i++) {
+				if (datetime.isBetween(allEvents[i].start, allEvents[i].end) || datetime.isSame(allEvents[i].start) || datetime.isSame(allEvents[i].end)) {
+					currentEvents.push(allEvents[i]);
 				}
-
-				// send back filled out event data
-				callback({ events: events });
-			} else {
-				callback(undefined);
 			}
-		});
-	} else {
-		callback(undefined);
-	}
+
+			// send back filled out event data
+			callback({ events: currentEvents });
+		} else {
+			callback(undefined);
+		}
+	});
 }
 
 // get any events happening at the moment
@@ -337,9 +263,9 @@ app.get('/eventsRightNow', function(req, res) {
 
 // get any events happening at a given datetime
 app.post('/eventsByTime', function(req, res) {
-	if (req.body.datetime) {
+	if (req.body.date) {
 		// attempt to parse datetime
-		var d = moment(req.body.datetime);
+		var d = moment(req.body.date);
 
 		// if successfully parsed datetime
 		if (d) {
@@ -353,3 +279,33 @@ app.post('/eventsByTime', function(req, res) {
 		res.send(undefined);
 	}
 });
+
+// fill out the skeleton schedule for a given weekday date, with a given rotation
+function fillOutSkeletonSchedule(date, rotation) {
+	var skeleton = schedule.weekDays[date.weekday()];
+	var events = [];
+
+	// iterate events
+	for (var i = 0; i < skeleton.length; i++) {
+		var event = skeleton[i];
+
+		// make copy of each event from skeleton with info filled in (dates relative to given date)
+		var eventCopy = {
+			name: event.name,
+			start: date.clone().startOf('day').add(event.start, 'minutes'),
+			end: date.clone().startOf('day').add(event.end, 'minutes')
+		};
+
+		// determine period if class block
+		if (rotation && event.block && rotation[event.block - 1]) {
+			eventCopy.period = rotation[event.block - 1];
+		}
+
+		// if this event currently happening (and not an extended block for a non-extended period)
+		if (!event.isExtended || schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) != -1) {
+			events.push(eventCopy);
+		}
+	}
+
+	return events;
+}
