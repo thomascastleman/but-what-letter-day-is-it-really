@@ -16,7 +16,7 @@ app.use('/', express.static('views'));
 var schedule;
 var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;
 
-fs.readFile('testschedule.json', 'UTF8', function(err, data) {
+fs.readFile('schedule.json', 'UTF8', function(err, data) {
 	if (err) throw err; 	// temp debug
 	schedule = JSON.parse(data);
 
@@ -288,8 +288,6 @@ function getEventsByTime(datetime, callback) {
 
 	// if schedule exists
 	if (sched) {
-		// copy events
-		sched = sched.slice();
 
 		// get letter day / rotation info
 		getLetterDayByDate(datetime, function(data) {
@@ -300,22 +298,27 @@ function getEventsByTime(datetime, callback) {
 
 				// iterate events
 				for (var i = 0; i < sched.length; i++) {
-					var ev = sched[i];
+					var scheduleEvent = sched[i];
+					var ev = {
+						name: scheduleEvent.name
+					};
 
 					// convert start and end times relative to current date
-					ev.start = datetime.clone().startOf('day').add(ev.start, 'minutes');
-					ev.end = datetime.clone().startOf('day').add(ev.end, 'minutes');
+					ev.start = datetime.clone().startOf('day').add(scheduleEvent.start, 'minutes');
+					ev.end = datetime.clone().startOf('day').add(scheduleEvent.end, 'minutes');
 
 					// determine period if class block
-					if (ev.block && data.rotation && ev.block > 0) {
-						ev.period = data.rotation[ev.block - 1];
+					if (scheduleEvent.block && data.rotation && scheduleEvent.block > 0) {
+						ev.period = data.rotation[scheduleEvent.block - 1];
 					}
 
 					// if this event currently happening (and not an extended block for a non-extended period)
-					if ((datetime.isBetween(ev.start, ev.end) || datetime.isSame(ev.start) || datetime.isSame(ev.end)) && !(ev.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
+					if ((datetime.isBetween(ev.start, ev.end) || datetime.isSame(ev.start) || datetime.isSame(ev.end)) && !(scheduleEvent.isExtended && schedule.extendedPeriods.indexOf(parseInt(ev.period, 10)) == -1)) {
 						response.events.push(ev);
 					}
 				}
+
+				console.log(schedule.weekDays[datetime.weekday()]);
 
 				callback(response);
 			} else {

@@ -3,53 +3,68 @@
 	"weekDays": {
 		"1": [
 				{
-					"name": "EXT BLOCK",
+					"name": "Orchestra",
+					"start": 465,
+					"end": 525
+				},
+				{
+					"name": "Extended Block",
 					"block": 1,
 					"isExtended": 1,
 					"start": 480,
 					"end": 525
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 1,
 					"start": 525,
 					"end": 600
 				},
 				{
-					"name": "ADVISORY",
+					"name": "Advisory",
 					"start": 600,
 					"end": 620
 				},
 				{
-					"name": "BREAK",
+					"name": "Break",
 					"start": 620,
 					"end": 645
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 2,
 					"start": 645,
 					"end": 720
 				},
 				{
-					"name": "LUNCH",
+					"name": "Lunch",
 					"start": 720,
+					"end": 765
+				},
+				{
+					"name": "Community Meeting",
+					"start": 765,
+					"end": 790
+				},
+				{
+					"name": "Clubs",
+					"start": 790,
 					"end": 815
 				},
 				{
-					"name": "X BLOCK",
+					"name": "X Block",
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "EXT BLOCK",
+					"name": "Extended Block",
 					"block": 3,
 					"isExtended": 1,
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 3,
 					"start": 860,
 					"end": 935
@@ -57,107 +72,127 @@
 			],
 		"2": [
 				{
-					"name": "EXT BLOCK",
+					"name": "Orchestra",
+					"start": 465,
+					"end": 525
+				},
+				{
+					"name": "Extended Block",
 					"block": 1,
 					"isExtended": 1,
 					"start": 480,
 					"end": 525
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 1,
 					"start": 525,
 					"end": 600
 				},
 				{
-					"name": "ADVISORY",
+					"name": "Advisory",
 					"start": 600,
 					"end": 620
 				},
 				{
-					"name": "BREAK",
+					"name": "Break",
 					"start": 620,
 					"end": 645
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 2,
 					"start": 645,
 					"end": 720
 				},
 				{
-					"name": "LUNCH",
+					"name": "Lunch",
 					"start": 720,
-					"end": 815
+					"end": 765
 				},
 				{
-					"name": "X BLOCK",
-					"start": 815,
-					"end": 860
+					"name": "Class",
+					"block": 3,
+					"start": 765,
+					"end": 840
 				},
 				{
-					"name": "EXT BLOCK",
+					"name": "Extended Block",
 					"block": 3,
 					"isExtended": 1,
-					"start": 815,
-					"end": 860
+					"start": 840,
+					"end": 885
 				},
 				{
-					"name": "CLASS",
-					"block": 3,
-					"start": 860,
+					"name": "X Block",
+					"start": 840,
+					"end": 885
+				},
+				{
+					"name": "Opportunity Block",
+					"start": 885,
 					"end": 935
 				}
 			],
 		"3": [
 				{
-					"name": "EXT BLOCK",
+					"name": "Orchestra",
+					"start": 465,
+					"end": 525
+				},
+				{
+					"name": "Extended Block",
 					"block": 1,
 					"isExtended": 1,
 					"start": 480,
 					"end": 525
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 1,
 					"start": 525,
 					"end": 600
 				},
 				{
-					"name": "ADVISORY",
+					"name": "Advisory",
 					"start": 600,
 					"end": 620
 				},
 				{
-					"name": "BREAK",
+					"name": "Break",
 					"start": 620,
 					"end": 645
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 2,
 					"start": 645,
 					"end": 720
 				},
 				{
-					"name": "LUNCH",
+					"name": "Lunch",
 					"start": 720,
-					"end": 815
+					"end": 765
 				},
 				{
-					"name": "X BLOCK",
+					"name": "Chapel",
+					"start": 765,
+					"end": 810
+				},
+				{
+					"name": "X Block",
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "EXT BLOCK",
+					"name": "Extended Block",
 					"block": 3,
 					"isExtended": 1,
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 3,
 					"start": 860,
 					"end": 935
@@ -165,53 +200,68 @@
 			],
 		"4": [
 				{
-					"name": "EXT BLOCK",
+					"name": "Orchestra",
+					"start": 465,
+					"end": 525
+				},
+				{
+					"name": "Extended Block",
 					"block": 1,
 					"isExtended": 1,
 					"start": 480,
 					"end": 525
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 1,
 					"start": 525,
 					"end": 600
 				},
 				{
-					"name": "ADVISORY",
+					"name": "Advisory",
 					"start": 600,
 					"end": 620
 				},
 				{
-					"name": "BREAK",
+					"name": "Break",
 					"start": 620,
 					"end": 645
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 2,
 					"start": 645,
 					"end": 720
 				},
 				{
-					"name": "LUNCH",
+					"name": "Lunch",
 					"start": 720,
+					"end": 765
+				},
+				{
+					"name": "Community Forum",
+					"start": 765,
+					"end": 790
+				},
+				{
+					"name": "Clubs",
+					"start": 790,
 					"end": 815
 				},
 				{
-					"name": "X BLOCK",
+					"name": "X Block",
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "EXT BLOCK",
+					"name": "Extended Block",
 					"block": 3,
 					"isExtended": 1,
 					"start": 815,
 					"end": 860
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 3,
 					"start": 860,
 					"end": 935
@@ -219,55 +269,65 @@
 			],
 		"5": [
 				{
-					"name": "EXT BLOCK",
+					"name": "Orchestra",
+					"start": 465,
+					"end": 525
+				},
+				{
+					"name": "Extended Block",
 					"block": 1,
 					"isExtended": 1,
 					"start": 480,
 					"end": 525
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 1,
 					"start": 525,
 					"end": 600
 				},
 				{
-					"name": "ADVISORY",
+					"name": "Advisory",
 					"start": 600,
 					"end": 620
 				},
 				{
-					"name": "BREAK",
+					"name": "Break",
 					"start": 620,
 					"end": 645
 				},
 				{
-					"name": "CLASS",
+					"name": "Class",
 					"block": 2,
 					"start": 645,
 					"end": 720
 				},
 				{
-					"name": "LUNCH",
+					"name": "Lunch",
 					"start": 720,
-					"end": 815
+					"end": 765
 				},
 				{
-					"name": "X BLOCK",
-					"start": 815,
-					"end": 860
+					"name": "Class",
+					"block": 3,
+					"start": 765,
+					"end": 840
 				},
 				{
-					"name": "EXT BLOCK",
+					"name": "Extended Block",
 					"block": 3,
 					"isExtended": 1,
-					"start": 815,
-					"end": 860
+					"start": 840,
+					"end": 885
 				},
 				{
-					"name": "CLASS",
-					"block": 3,
-					"start": 860,
+					"name": "X Block",
+					"start": 840,
+					"end": 885
+				},
+				{
+					"name": "Opportunity Block",
+					"start": 885,
 					"end": 935
 				}
 			]
