@@ -246,7 +246,7 @@ function getEventsByTime(datetime, callback) {
 			}
 
 			// send back filled out event data
-			callback({ events: currentEvents });
+			callback(currentEvents);
 		} else {
 			callback(undefined);
 		}
@@ -285,25 +285,27 @@ function fillOutSkeletonSchedule(date, rotation) {
 	var skeleton = schedule.weekDays[date.weekday()];
 	var events = [];
 
-	// iterate events
-	for (var i = 0; i < skeleton.length; i++) {
-		var event = skeleton[i];
+	if (skeleton) {
+		// iterate events
+		for (var i = 0; i < skeleton.length; i++) {
+			var event = skeleton[i];
 
-		// make copy of each event from skeleton with info filled in (dates relative to given date)
-		var eventCopy = {
-			name: event.name,
-			start: date.clone().startOf('day').add(event.start, 'minutes'),
-			end: date.clone().startOf('day').add(event.end, 'minutes')
-		};
+			// make copy of each event from skeleton with info filled in (dates relative to given date)
+			var eventCopy = {
+				name: event.name,
+				start: date.clone().startOf('day').add(event.start, 'minutes'),
+				end: date.clone().startOf('day').add(event.end, 'minutes')
+			};
 
-		// determine period if class block
-		if (rotation && event.block && rotation[event.block - 1]) {
-			eventCopy.period = rotation[event.block - 1];
-		}
+			// determine period if class block
+			if (rotation && event.block && rotation[event.block - 1]) {
+				eventCopy.period = rotation[event.block - 1];
+			}
 
-		// if this event currently happening (and not an extended block for a non-extended period)
-		if (!event.isExtended || schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) != -1) {
-			events.push(eventCopy);
+			// if this event currently happening (and not an extended block for a non-extended period)
+			if (!event.isExtended || schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) != -1) {
+				events.push(eventCopy);
+			}
 		}
 	}
 
