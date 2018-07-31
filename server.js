@@ -303,7 +303,7 @@ function fillOutSkeletonSchedule(date, rotation) {
 			}
 
 			// if this event currently happening (and not an extended block for a non-extended period)
-			if (!event.isExtended || schedule.extendedPeriods.indexOf(parseInt(eventCopy.period, 10)) != -1) {
+			if (!event.isExtended || schedule.extendedPeriods.indexOf(eventCopy.period) != -1) {
 				events.push(eventCopy);
 			}
 		}
