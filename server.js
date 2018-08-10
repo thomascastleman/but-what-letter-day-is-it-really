@@ -297,6 +297,11 @@ function fillOutSkeletonSchedule(date, rotation) {
 				end: date.clone().startOf('day').add(event.end, 'minutes')
 			};
 
+			// record event extended
+			if (event.isExtended) {
+				eventCopy.isExtended = 1;
+			}
+
 			// determine period if class block
 			if (rotation && event.block && rotation[event.block - 1]) {
 				eventCopy.period = rotation[event.block - 1];
