@@ -41,7 +41,8 @@ Get all schedule info for any given *future* date by posting a date string under
       "name":"Extended Block",
       "start":"2018-09-12T12:00:00.000Z",
       "end":"2018-09-12T12:45:00.000Z",
-      "period":"4"
+      "period":"4",
+      "isExtended": 1
     },
     {
       "name":"Class",
@@ -68,7 +69,7 @@ Get all schedule info for any given *future* date by posting a date string under
   ]
 }
 ```
-Note that any classes or extended blocks are labeled by period, and all start and end dates are [ISO 8601 strings](https://en.wikipedia.org/wiki/ISO_8601)
+Note that any classes or extended blocks are labeled by period, and all start and end dates are [ISO 8601 strings](https://en.wikipedia.org/wiki/ISO_8601). Extended blocks are marked with an `isExtended` value of 1.
 
 ---
 ##### GET `/infoToday`
@@ -101,7 +102,8 @@ Get an array of events that are occurring at a given *future* time, if any, by p
     "name":"Extended Block",
     "start":"2018-09-14T18:00:00.000Z",
     "end":"2018-09-14T18:45:00.000Z",
-    "period":"4"
+    "period":"4",
+    "isExtended": 1
   },
   {
     "name":"X Block",
