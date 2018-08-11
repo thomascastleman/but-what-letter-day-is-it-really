@@ -78,9 +78,15 @@ app.get('/letterToday', function(req, res) {
 app.post('/letterByDate', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date);
-		getLetterDayByDate(d, function(data) {
-			res.send(data);
-		});
+
+		// if valid date
+		if (d.isValid()) {
+			getLetterDayByDate(d, function(data) {
+				res.send(data);
+			});
+		} else {
+			res.send(undefined);
+		}
 	} else {
 		res.send(undefined);
 	}
@@ -124,8 +130,8 @@ app.post('/infoByDate', function(req, res) {
 		// parse date
 		var d = moment(req.body.date);
 
-		// if successfully parsed date
-		if (d) {
+		// if valid date
+		if (d.isValid()) {
 			// get schedule info for given date
 			infoByDate(d, function(data) {
 				res.send(data);
@@ -190,8 +196,8 @@ app.post('/letterByWeek', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date);
 
-		// if successfully parsed date
-		if (d) {
+		// if valid date
+		if (d.isValid()) {
 			getLetterDaysInWeek(d, function(data) {
 				res.send(data);
 			});
@@ -208,8 +214,8 @@ app.post('/infoByWeek', function(req, res) {
 	if (req.body.date) {
 		var d = moment(req.body.date);
 
-		// if successfully parsed date
-		if (d) {
+		// if valid date
+		if (d.isValid()) {
 			// get letter info for full week
 			getLetterDaysInWeek(d, function(data) {
 				// iterate over each day with letter data
@@ -267,8 +273,8 @@ app.post('/eventsByTime', function(req, res) {
 		// attempt to parse datetime
 		var d = moment(req.body.date);
 
-		// if successfully parsed datetime
-		if (d) {
+		// if valid datetime
+		if (d.isValid()) {
 			getEventsByTime(d, function(data) {
 				res.send(data);
 			});
