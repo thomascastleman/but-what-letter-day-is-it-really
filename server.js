@@ -38,6 +38,7 @@ function getLetterDayByDate(date, callback) {
 			if (data.hasOwnProperty(k)) {
 				var ev = data[k];
 
+				isLetterDay.lastIndex = 0;	// reset regex object to match from start of string
 				var match = isLetterDay.exec(ev.summary);
 
 				// if contains info indicating upper school letter day
@@ -246,7 +247,7 @@ function getEventsByTime(datetime, callback) {
 
 			// filter out events that aren't happening at given datetime
 			for (var i = 0; i < allEvents.length; i++) {
-				if (datetime.isBetween(allEvents[i].start, allEvents[i].end) || datetime.isSame(allEvents[i].start) || datetime.isSame(allEvents[i].end)) {
+				if (datetime.isBetween(allEvents[i].start, allEvents[i].end) || datetime.isSame(allEvents[i].start)) {
 					currentEvents.push(allEvents[i]);
 				}
 			}
