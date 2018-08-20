@@ -5,6 +5,8 @@ Note that this service uses an outline of the basic schedule that is *not* updat
 
 Letter and rotation data is pulled from the school's calendar, however, which *is* usually updated regularly, meaning this data should be accurate almost always.
 
+Schedule last updated: August 2018
+
 ## Endpoints
 
 ##### POST `/letterByDate`
