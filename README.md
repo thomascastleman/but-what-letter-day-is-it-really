@@ -133,3 +133,17 @@ which tells us that, during this time, both X Block and Extended 4th Period clas
 ---
 ##### GET `/eventsRightNow`
 Get an array of any events occurring at the current time. Same response format as `/eventsByTime`. 
+
+## Installation
+
+First, run `npm install` to install project dependencies. This software requires a `credentials.js` file with the following format: 
+```javascript
+module.exports = {
+	schoolEventsCalendar: '<YOUR CALENDAR FEED URL HERE>'
+}
+```
+
+The server may be started with `node server.js` which should output something like:
+```
+Letter Day server listening on port 8080
+```
