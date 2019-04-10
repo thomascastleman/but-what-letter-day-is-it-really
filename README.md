@@ -90,7 +90,7 @@ Get all schedule info for today's date, if any exists. Same response format as `
 Get an array of letter day and rotation info for an entire (future) week by posting some date within that week under the name `date`. Example response would look like:
 ```json
 {
-  "data": {
+  "data":
     [
       { "date":"2018-09-10T04:00:00.000Z", "letter":"F", "rotation":["4","5","6"] },
       { "date":"2018-09-11T04:00:00.000Z", "letter":"A", "rotation":["1","2","3"] },
@@ -98,7 +98,6 @@ Get an array of letter day and rotation info for an entire (future) week by post
       { "date":"2018-09-13T04:00:00.000Z", "letter":"C", "rotation":["2","3","1"] },
       { "date":"2018-09-14T04:00:00.000Z", "letter":"D", "rotation":["5","6","4"] }
     ]
-  }
 }
 ```
 The `"date"` string is the full date of that day of the week.
@@ -112,7 +111,7 @@ Get array of *all* schedule info for an entire (future) week by posting some dat
 Get an array of events that are occurring at a given *future* time, if any, by posting a datetime under the name `date`. For example, at the time of writing, posting `"2018-09-14 14:34:00"` would yield a response of:
 ```json
 {
-  "data": {
+  "data":
     [
       {
         "name":"Extended Block",
@@ -127,7 +126,6 @@ Get an array of events that are occurring at a given *future* time, if any, by p
         "end":"2018-09-14T18:45:00.000Z"
       }
     ]
-  }
 }
 ```
 which tells us that, during this time, both X Block and Extended 4th Period class time will be occurring.
