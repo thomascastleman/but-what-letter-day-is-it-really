@@ -16,6 +16,7 @@ app.use('/', express.static('views'));
 var port = 8080;	// server port
 var schedule;	// daily schedule serialized in object
 var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;	// regular expression for extracting letter day info from ical response
+var isSpecialSched = /US\sSpecial\sSchedule\s(\d)-(\d)-(\d)/g;	// regular expression for extracting rotation from special schedule
 
 // read daily schedule serialization from file
 fs.readFile('./schedule.json', 'UTF8', function(err, data) {
@@ -45,17 +46,34 @@ function getLetterDayByDate(date, cb) {
 			cb(err);
 		} else {
 			var letter, rotation;
+			var isSpecial = false;
 
 			// iterate over events
 			for (var k in data) {
 				if (data.hasOwnProperty(k)) {
 					var ev = data[k];
 
+					isSpecialSched.lastIndex = 0;	// reset regex object to match from start of string
+					var specialMatch = isSpecialSched.exec(ev.summary);
+
+					// check for US special schedule info in event
+					if (specialMatch && specialMatch.length > 3) {
+						var evDate = moment(ev.start);
+
+						// if event date same as target date
+						if (evDate.isValid() && evDate.isSame(date, 'day')) {
+							// extract just the rotation
+							rotation = [specialMatch[1], specialMatch[2], specialMatch[3]];
+							isSpecial = true;
+							break;
+						}
+					}
+
 					isLetterDay.lastIndex = 0;	// reset regex object to match from start of string
 					var match = isLetterDay.exec(ev.summary);
 
-					// if contains info indicating upper school letter day
-					if (match) {
+					// check for US regular letter day info in event
+					if (match && match.length > 4) {
 						var evDate = moment(ev.start);
 
 						// if event date same as target date
@@ -69,11 +87,12 @@ function getLetterDayByDate(date, cb) {
 				}
 			}
 
-			// callback on resulting data
-			if (letter && rotation) {
+			// callback on resulting data (only ensure rotation exists -- in case special schedule)
+			if (rotation) {
 				cb(err, {
 					letter: letter,
-					rotation: rotation
+					rotation: rotation,
+					isSpecial: isSpecial
 				});
 			} else {
 				// callback on error
@@ -121,6 +140,7 @@ function infoByDate(date, cb) {
 			cb(err, {
 				letter: data.letter,
 				rotation: data.rotation,
+				isSpecial: data.isSpecial,
 				schedule: fillSched(date, data.rotation)
 			});
 		} else {
