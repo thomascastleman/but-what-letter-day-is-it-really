@@ -199,27 +199,52 @@ function getLetterDaysInWeek(date, cb) {
 				if (data.hasOwnProperty(k)) {
 					var ev = data[k];
 
-					// check regex match against event summary
-					var match = isLetterDay.exec(ev.summary);
+					isSpecialSched.lastIndex = 0;	// reset regex object to match from start of string
+					var specialMatch = isSpecialSched.exec(ev.summary);
 
-					// if contains info indicating upper school letter day
-					if (match) {
+					// check for US special schedule info in event
+					if (specialMatch && specialMatch.length > 3) {
 						var evDate = moment(ev.start);
 
 						// if event date same as target date
-						if (evDate.isValid() && evDate.isBetween(weekStart, weekEnd)) {
-
-							// extract regex match data
+						if (evDate.isValid() && evDate.isSame(date, 'day')) {
+							// extract just the rotation
 							weekDays.push({
 								date: evDate,
-								letter: match[1],
-								rotation: [match[2], match[3], match[4]]
+								rotation: [specialMatch[1], specialMatch[2], specialMatch[3]],
+								isSpecial: true
 							});
 
 							// if five weekdays found, finish
 							count++;
 							if (count > 4) {
 								break;
+							}
+						}
+					} else {
+
+						// check regex match against event summary
+						var match = isLetterDay.exec(ev.summary);
+
+						// if contains info indicating upper school letter day
+						if (match && match.length > 4) {
+							var evDate = moment(ev.start);
+
+							// if event date same as target date
+							if (evDate.isValid() && evDate.isBetween(weekStart, weekEnd)) {
+
+								// extract regex match data
+								weekDays.push({
+									date: evDate,
+									letter: match[1],
+									rotation: [match[2], match[3], match[4]]
+								});
+
+								// if five weekdays found, finish
+								count++;
+								if (count > 4) {
+									break;
+								}
 							}
 						}
 					}
