@@ -17,10 +17,12 @@ Get the letter day and rotation data for any given *future* date, if any exists,
 {
   "data": {
     "letter":"D",
-    "rotation":["5","6","4"]
+    "rotation":["5","6","4"],
+    "isSpecial": false
   }
 }
 ```
+The `isSpecial` flag indicates if that day is operating under a special schedule (irregular rotation). **Note:** if a special schedule occurs, the `letter` attribute may be undefined. 
 
 Example usage: (with jQuery `$.post`)
 
@@ -45,6 +47,7 @@ Get all schedule info for any given *future* date by posting a date string under
   "data": {
     "letter":"B",
     "rotation":["4","5","6"],
+    "isSpecial": false,
     "schedule":[
       {
         "name":"Extended Block",
@@ -100,7 +103,7 @@ Get an array of letter day and rotation info for an entire (future) week by post
     ]
 }
 ```
-The `"date"` string is the full date of that day of the week.
+The `"date"` string is the full date of that day of the week. Any identified special schedule days will be flagged with `isSpecial`. 
 
 ---
 ##### POST `/infoByWeek`
