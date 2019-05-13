@@ -3,11 +3,11 @@ A more sustainable extension of the letter day service for managing the St. Anne
 
 **Schedule Data:** Note that this service uses an outline of the basic schedule that is *not* updated on special occasions, meaning that it will not always provide accurate results. However, in most standard cases, the schedule is consistent and data can be trusted. 
 
-**Letter Data:** Letter and rotation data is pulled from the school's calendar, however, which *is* usually updated regularly, meaning this data should be accurate almost always.
+**Letter Data:** Letter and rotation data is pulled from the school's calendar, however, which *is* usually updated regularly, meaning this data should be accurate almost always. Now, with special schedule parsing, the service should be correct even on days when the rotation / letter differ from the usual cycle. 
 
-Schedule last updated: August 2018
+Schedule last updated: 2018-19 School Year (August 2018)
 
-## Endpoints
+## API
 
 Each response will include any error in the `err` attribute, and the actual response data in the `data` attribute.
 
@@ -16,13 +16,15 @@ Get the letter day and rotation data for any given *future* date, if any exists,
 ```json
 {
   "data": {
+    "date":"2019-05-13T04:00:00.000Z",
+    "raw": "Day D (US) 5-6-4 (US Monday D)",
     "letter":"D",
     "rotation":["5","6","4"],
     "isSpecial": false
   }
 }
 ```
-The `isSpecial` flag indicates if that day is operating under a special schedule (irregular rotation). **Note:** if a special schedule occurs, the `letter` attribute may be undefined. 
+The `isSpecial` flag indicates if that day is operating under a special schedule (irregular rotation, etc). The `raw` attribute contains the event summary string taken directly from the iCalendar feed.
 
 Example usage: (with jQuery `$.post`)
 
@@ -30,7 +32,7 @@ Example usage: (with jQuery `$.post`)
 // get the letter data for Sep 21, 2018
 $.post('... /letterByDate', { date: "2018-09-21" }, function(res) {
   if (!res.err) {
-    // do something with res.data.letter or res.data.rotation
+    // do something with res.data
   }
 });
 ```
@@ -45,6 +47,8 @@ Get all schedule info for any given *future* date by posting a date string under
 ```json
 {
   "data": {
+    "date":"2018-09-12T04:00:00.000Z",
+    "raw": "Day B (US) 4-5-6 (US Thursday B)",
     "letter":"B",
     "rotation":["4","5","6"],
     "isSpecial": false,
@@ -95,11 +99,11 @@ Get an array of letter day and rotation info for an entire (future) week by post
 {
   "data":
     [
-      { "date":"2018-09-10T04:00:00.000Z", "letter":"F", "rotation":["4","5","6"] },
-      { "date":"2018-09-11T04:00:00.000Z", "letter":"A", "rotation":["1","2","3"] },
-      { "date":"2018-09-12T04:00:00.000Z", "letter":"B", "rotation":["6","5","4"] },
-      { "date":"2018-09-13T04:00:00.000Z", "letter":"C", "rotation":["2","3","1"] },
-      { "date":"2018-09-14T04:00:00.000Z", "letter":"D", "rotation":["5","6","4"] }
+      {"date":"2019-05-13T04:00:00.000Z", "raw":"Day E (US) 1-2-3 (US Monday E)", "letter":"E", "rotation":["1","2","3"], "isSpecial":false},
+      {"date":"2019-05-14T04:00:00.000Z", "raw":"Day F (US) 4-5-6 (US Tuesday F)", "letter":"F", "rotation":["4","5","6"], "isSpecial":false},
+      {"date":"2019-05-15T04:00:00.000Z", "raw":"Day A (US) 1-2-3 (US Wednesday A)", "letter":"A", "rotation":["1","2","3"], "isSpecial":false},
+      {"date":"2019-05-16T04:00:00.000Z", "raw":"Day B (US) 4-5-6 (US Thursday B)", "letter":"B", "rotation":["4","5","6"], "isSpecial":false},
+      {"date":"2019-05-17T04:00:00.000Z", "raw":"Day C (US) 2-3-1 (US Friday C)", "letter":"C", "rotation":["2","3","1"], "isSpecial":false}
     ]
 }
 ```
@@ -137,16 +141,35 @@ which tells us that, during this time, both X Block and Extended 4th Period clas
 ##### GET `/eventsRightNow`
 Get an array of any events occurring at the current time. Same response format as `/eventsByTime`. 
 
+## A Note on Special Schedules
+
+Sometimes, the school will run on an irregular rotation. In the case where the rotation changes, the summary string often looks something like this: `Day F (US) 4-5-6 (US Special Schedule 6-5-4)`. Note how both rotations are given, the normal and modified. The service will parse such a string as:
+```
+{
+  "data": {
+    "date":"2019-04-26T04:00:00.000Z",
+    "raw":"Day F (US) 4-5-6 (US Special Schedule 6-5-4)",
+    "letter":"US Special Schedule 6-5-4",
+    "rotation":["6","5","4"],
+    "isSpecial":true
+  }
+}
+```
+
+Additionally, special schedules such as `Day B (US) 4-5-6 (US Special Half-Day B Schedule)` will also be parsed with an `isSpecial` of 1, even though a new rotation is not given. In this case, the regular Day B rotation would be used, but it is useful to know that the day is irregular.
+
 ## Installation
 
-First, run `npm install` to install project dependencies. This software requires a `credentials.js` file with the following format: 
+First, run `npm install` to install project dependencies. The software requires a `credentials.js` file with the following format: 
 ```javascript
 module.exports = {
 	schoolEventsCalendar: '<YOUR CALENDAR FEED URL HERE>'
 }
 ```
 
-The server may be started with `node server.js` which should output something like:
+The `schoolEventsCalendar` should be an [ICS feed](https://en.wikipedia.org/wiki/ICalendar).
+
+The server may then be started with `node server.js` which should output something like this:
 ```
 Letter Day server listening on port 8080
 ```
