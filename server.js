@@ -13,11 +13,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.engine('html', mustacheExpress());
 app.use('/', express.static('views'));
 
-var port = 8080;	// server port
+var PORT = 8080;	// server port
 var SCHEDULE_PATH = './schedule.json';	// path to schedule serialization
 var schedule;	// daily schedule serialized in object
-var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;	// regular expression for extracting letter day info from ical response
-var isSpecialSched = /US\sSpecial\sSchedule\s(\d)-(\d)-(\d)/g;	// regular expression for extracting rotation from special schedule
+
+// regular expression to match all event summaries that detail the US rotation / letter day (including special schedules)
+var letterDayRE = /Day ([ABCDEF]) \(US\) (\d)-(\d)-(\d)( \(US Special Schedule (\d)-(\d)-(\d)\))?/g;
 
 // on start, read daily schedule from file
 establishSchedule(function(err) {
@@ -30,71 +31,69 @@ establishSchedule(function(err) {
 	}
 
 	// start server to listen on specified port
-	var server = app.listen(port, function() {
+	var server = app.listen(PORT, function() {
 		console.log('Letter Day server listening on port %d', server.address().port);
 	});
 });
 
+/*	parse event info regarding letter day, rotation, and special schedule
+	status into an object */
+function extractLetterInfo(event, match) {
+	/*	Extract regex match data (letter and rotation periods).
+		Try to use special schedule match if found, if not use regular.
+		Include event date, and raw summary in data.
+		If summary suggests a special schedule, make note of it. */
+	return {
+		date: moment(event.start).startOf('day'),
+		raw: event.summary,
+		letter: match[5] ? match[5].substring(1, match[5].length).replace(/[()]/g, '') : match[1],
+		rotation: match[6] && match[7] && match[8] ? [match[6], match[7], match[8]] : [match[2], match[3], match[4]],
+		isSpecial: event.summary.toLowerCase().includes('special')
+	};
+}
+
 // given moment date, determine letter day and class rotation for that day, if any
 function getLetterDayByDate(date, cb) {
 	// call veracross API
-	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, data) {
+	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, icalEvents) {
 		if (err) {
 			// callback on error object
 			cb(err);
 		} else {
-			var letter, rotation;
-			var isSpecial = false;
+			// letter data object
+			var letterData;
 
 			// iterate over events
-			for (var k in data) {
-				if (data.hasOwnProperty(k)) {
-					var ev = data[k];
+			for (var k in icalEvents) {
+				if (icalEvents.hasOwnProperty(k)) {
+					var ev = icalEvents[k];
 
-					isSpecialSched.lastIndex = 0;	// reset regex object to match from start of string
-					var specialMatch = isSpecialSched.exec(ev.summary);
+					letterDayRE.lastIndex = 0;	// reset regex object to match from start of string
+					var m = letterDayRE.exec(ev.summary);	// attempt to match event summary against regex
 
-					// check for US special schedule info in event
-					if (specialMatch && specialMatch.length > 3) {
+					// if match found, and has all necessary groups
+					if (m && m.length > 8) {
+						// parse start time to get date of event
 						var evDate = moment(ev.start);
 
 						// if event date same as target date
 						if (evDate.isValid() && evDate.isSame(date, 'day')) {
-							// extract just the rotation
-							rotation = [specialMatch[1], specialMatch[2], specialMatch[3]];
-							isSpecial = true;
-							break;
-						}
-					}
+							// parse the letter day info from event and regex match
+							letterData = extractLetterInfo(ev, m);
 
-					isLetterDay.lastIndex = 0;	// reset regex object to match from start of string
-					var match = isLetterDay.exec(ev.summary);
-
-					// check for US regular letter day info in event
-					if (match && match.length > 4) {
-						var evDate = moment(ev.start);
-
-						// if event date same as target date
-						if (evDate.isValid() && evDate.isSame(date, 'day')) {
-							// extract regex match data (letter and rotation periods)
-							letter = match[1];
-							rotation = [match[2], match[3], match[4]];
+							// break out of loop, as we've found what we're looking for
 							break;
 						}
 					}
 				}
 			}
 
-			// callback on resulting data (only ensure rotation exists -- in case special schedule)
-			if (rotation) {
-				cb(err, {
-					letter: letter,
-					rotation: rotation,
-					isSpecial: isSpecial
-				});
+			if (letterData) {
+				// callback on resulting data, if any was found
+				cb(err, letterData);
 			} else {
 				// callback on error
-				cb("There is no letter day information for the requested date.");
+				cb("No letter day information was found for " + date.format('YYYY-MM-DD'));
 			}
 		}
 	});
@@ -134,13 +133,11 @@ function infoByDate(date, cb) {
 	getLetterDayByDate(date, function(err, data) {
 		// if successfully found letter info
 		if (!err) {
+			// add filled-out daily schedule to data
+			data.schedule = fillSched(date, data.rotation)
+
 			// callback on letter / rotation / filled-out schedule
-			cb(err, {
-				letter: data.letter,
-				rotation: data.rotation,
-				isSpecial: data.isSpecial,
-				schedule: fillSched(date, data.rotation)
-			});
+			cb(err, data);
 		} else {
 			// callback on just skeleton with dates filled out
 			cb(err, {
@@ -187,62 +184,36 @@ function getLetterDaysInWeek(date, cb) {
 	var weekEnd = date.clone().endOf('week');
 
 	// call ical for calendar data
-	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, data) {
+	cal.fromURL(creds.schoolEventsCalendar, {}, function(err, icalEvents) {
 		if (err) {
 			// callback on error object
 			cb(err);
 		} else {
 			// iterate over events
-			for (var k in data) {
-				if (data.hasOwnProperty(k)) {
-					var ev = data[k];
+			for (var k in icalEvents) {
+				if (icalEvents.hasOwnProperty(k)) {
+					var ev = icalEvents[k];
 
-					isSpecialSched.lastIndex = 0;	// reset regex object to match from start of string
-					var specialMatch = isSpecialSched.exec(ev.summary);
+					letterDayRE.lastIndex = 0;	// reset regex object to match from start of string
+					var m = letterDayRE.exec(ev.summary);	// check event summary for letter day info
 
-					// check for US special schedule info in event
-					if (specialMatch && specialMatch.length > 3) {
+					// if match found, with necessary groups
+					if (m && m.length > 8) {
+						// get event date by parsing start time
 						var evDate = moment(ev.start);
 
-						// if event date same as target date
-						if (evDate.isValid() && evDate.isSame(date, 'day')) {
-							// extract just the rotation
-							weekDays.push({
-								date: evDate,
-								rotation: [specialMatch[1], specialMatch[2], specialMatch[3]],
-								isSpecial: true
-							});
+						// if event date within the week
+						if (evDate.isValid() && evDate.isBetween(weekStart, weekEnd)) {
+							// parse letter info from event object and regex match
+							var letterData = extractLetterInfo(ev, m);
+
+							// add data to weekday list
+							weekDays.push(letterData);
 
 							// if five weekdays found, finish
 							count++;
 							if (count > 4) {
 								break;
-							}
-						}
-					} else {
-
-						// check regex match against event summary
-						var match = isLetterDay.exec(ev.summary);
-
-						// if contains info indicating upper school letter day
-						if (match && match.length > 4) {
-							var evDate = moment(ev.start);
-
-							// if event date same as target date
-							if (evDate.isValid() && evDate.isBetween(weekStart, weekEnd)) {
-
-								// extract regex match data
-								weekDays.push({
-									date: evDate,
-									letter: match[1],
-									rotation: [match[2], match[3], match[4]]
-								});
-
-								// if five weekdays found, finish
-								count++;
-								if (count > 4) {
-									break;
-								}
 							}
 						}
 					}
@@ -355,6 +326,45 @@ app.post('/eventsByTime', function(req, res) {
 	}
 });
 
+// read daily schedule from file, parse as necessary
+function establishSchedule(cb) {
+	// read daily schedule serialization from filepath defined above
+	fs.readFile(SCHEDULE_PATH, 'UTF8', function(err, data) {
+		if (!err) {
+			// parse JSON string into an object
+			schedule = JSON.parse(data);
+
+			// for each week day
+			for (var i = 0; i < schedule.weekDays.length; i++) {
+				// for each event that day
+				for (var j = 0; j < schedule.weekDays[i].length; j++) {
+					var ev = schedule.weekDays[i][j];
+
+					// parse event start into object with hours and minutes as integers
+					var spl = ev.start.split(':');
+					ev.start = {
+						hours: parseInt(spl[0], 10),
+						minutes: parseInt(spl[1], 10)
+					};
+
+					// perform same formatting for event end
+					spl = ev.end.split(':');
+					ev.end = {
+						hours: parseInt(spl[0], 10),
+						minutes: parseInt(spl[1], 10)
+					};
+				}
+			}
+
+			// callback, as schedule is ready to be used
+			cb();
+		} else {
+			// callback on error given by fs
+			cb(err);
+		}
+	});
+}
+
 // fill out the skeleton schedule for a given weekday date, with a given rotation
 function fillSched(date, rotation) {
 	var skeleton = schedule.weekDays[date.weekday() - 1];
@@ -403,42 +413,3 @@ function fillSched(date, rotation) {
 app.get('*', function(req, res) {
 	res.redirect('/letterToday');
 });
-
-// read daily schedule from file, parse as necessary
-function establishSchedule(cb) {
-	// read daily schedule serialization from filepath defined above
-	fs.readFile(SCHEDULE_PATH, 'UTF8', function(err, data) {
-		if (!err) {
-			// parse JSON string into an object
-			schedule = JSON.parse(data);
-
-			// for each week day
-			for (var i = 0; i < schedule.weekDays.length; i++) {
-				// for each event that day
-				for (var j = 0; j < schedule.weekDays[i].length; j++) {
-					var ev = schedule.weekDays[i][j];
-
-					// parse event start into object with hours and minutes as integers
-					var spl = ev.start.split(':');
-					ev.start = {
-						hours: parseInt(spl[0], 10),
-						minutes: parseInt(spl[1], 10)
-					};
-
-					// perform same formatting for event end
-					spl = ev.end.split(':');
-					ev.end = {
-						hours: parseInt(spl[0], 10),
-						minutes: parseInt(spl[1], 10)
-					};
-				}
-			}
-
-			// callback, as schedule is ready to be used
-			cb();
-		} else {
-			// callback on error given by fs
-			cb(err);
-		}
-	});
-}
