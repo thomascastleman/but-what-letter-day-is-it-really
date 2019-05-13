@@ -1,320 +1,320 @@
 {
 	"extendedPeriods": ["1", "4"],
-	"weekDays": {
-		"1": [
-				{
-					"name": "Faculty Collaboration & Orchestra",
-					"start": 465,
-					"end": 525
-				},
-				{
-					"name": "Extended Block",
-					"block": 1,
-					"isExtended": 1,
-					"start": 480,
-					"end": 525
-				},
-				{
-					"name": "Class",
-					"block": 1,
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "Community Meeting & Break",
-					"start": 600,
-					"end": 645
-				},
-				{
-					"name": "Class",
-					"block": 2,
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "Lunch",
-					"start": 720,
-					"end": 765
-				},
-				{
-					"name": "Clubs & College Counseling",
-					"start": 765,
-					"end": 815
-				},
-				{
-					"name": "X Block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Extended Block",
-					"block": 3,
-					"isExtended": 1,
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Class",
-					"block": 3,
-					"start": 860,
-					"end": 935
-				}
-			],
-		"2": [
-				{
-					"name": "Faculty Collaboration & Orchestra",
-					"start": 465,
-					"end": 525
-				},
-				{
-					"name": "Extended Block",
-					"block": 1,
-					"isExtended": 1,
-					"start": 480,
-					"end": 525
-				},
-				{
-					"name": "Class",
-					"block": 1,
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "Advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "Office Hours & Break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "Class",
-					"block": 2,
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "Lunch",
-					"start": 720,
-					"end": 765
-				},
-				{
-					"name": "Class",
-					"block": 3,
-					"start": 765,
-					"end": 840
-				},
-				{
-					"name": "Extended Block",
-					"block": 3,
-					"isExtended": 1,
-					"start": 840,
-					"end": 885
-				},
-				{
-					"name": "X Block",
-					"start": 840,
-					"end": 885
-				},
-				{
-					"name": "Opportunity Block",
-					"start": 885,
-					"end": 935
-				}
-			],
-		"3": [
-				{
-					"name": "Faculty Collaboration & Orchestra",
-					"start": 465,
-					"end": 525
-				},
-				{
-					"name": "Extended Block",
-					"block": 1,
-					"isExtended": 1,
-					"start": 480,
-					"end": 525
-				},
-				{
-					"name": "Class",
-					"block": 1,
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "Advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "Office Hours & Break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "Class",
-					"block": 2,
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "Lunch",
-					"start": 720,
-					"end": 765
-				},
-				{
-					"name": "Chapel",
-					"start": 765,
-					"end": 815
-				},
-				{
-					"name": "X Block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Extended Block",
-					"block": 3,
-					"isExtended": 1,
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Class",
-					"block": 3,
-					"start": 860,
-					"end": 935
-				}
-			],
-		"4": [
-				{
-					"name": "Faculty Collaboration & Orchestra",
-					"start": 465,
-					"end": 525
-				},
-				{
-					"name": "Extended Block",
-					"block": 1,
-					"isExtended": 1,
-					"start": 480,
-					"end": 525
-				},
-				{
-					"name": "Class",
-					"block": 1,
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "Advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "Office Hours & Break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "Class",
-					"block": 2,
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "Lunch",
-					"start": 720,
-					"end": 765
-				},
-				{
-					"name": "Community Forum or Clubs",
-					"start": 765,
-					"end": 815
-				},
-				{
-					"name": "X Block",
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Extended Block",
-					"block": 3,
-					"isExtended": 1,
-					"start": 815,
-					"end": 860
-				},
-				{
-					"name": "Class",
-					"block": 3,
-					"start": 860,
-					"end": 935
-				}
-			],
-		"5": [
-				{
-					"name": "Faculty Collaboration & Orchestra",
-					"start": 465,
-					"end": 525
-				},
-				{
-					"name": "Extended Block",
-					"block": 1,
-					"isExtended": 1,
-					"start": 480,
-					"end": 525
-				},
-				{
-					"name": "Class",
-					"block": 1,
-					"start": 525,
-					"end": 600
-				},
-				{
-					"name": "Advisory",
-					"start": 600,
-					"end": 620
-				},
-				{
-					"name": "Office Hours & Break",
-					"start": 620,
-					"end": 645
-				},
-				{
-					"name": "Class",
-					"block": 2,
-					"start": 645,
-					"end": 720
-				},
-				{
-					"name": "Lunch",
-					"start": 720,
-					"end": 765
-				},
-				{
-					"name": "Class",
-					"block": 3,
-					"start": 765,
-					"end": 840
-				},
-				{
-					"name": "Extended Block",
-					"block": 3,
-					"isExtended": 1,
-					"start": 840,
-					"end": 885
-				},
-				{
-					"name": "X Block",
-					"start": 840,
-					"end": 885
-				},
-				{
-					"name": "Opportunity Block",
-					"start": 885,
-					"end": 935
-				}
-			]
-	}
+	"weekDays": [
+		[
+			{
+				"name": "Faculty Collaboration & Orchestra",
+				"start": "7:45",
+				"end": "8:45"
+			},
+			{
+				"name": "Extended Block",
+				"block": 1,
+				"isExtended": 1,
+				"start": "8:00",
+				"end": "8:45"
+			},
+			{
+				"name": "Class",
+				"block": 1,
+				"start": "8:45",
+				"end": "10:00"
+			},
+			{
+				"name": "Community Meeting & Break",
+				"start": "10:00",
+				"end": "10:45"
+			},
+			{
+				"name": "Class",
+				"block": 2,
+				"start": "10:45",
+				"end": "12:00"
+			},
+			{
+				"name": "Lunch",
+				"start": "12:00",
+				"end": "12:45"
+			},
+			{
+				"name": "Clubs & College Counseling",
+				"start": "12:45",
+				"end": "13:35"
+			},
+			{
+				"name": "X Block",
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "Extended Block",
+				"block": 3,
+				"isExtended": 1,
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "Class",
+				"block": 3,
+				"start": "14:20",
+				"end": "15:35"
+			}
+		],
+		[
+			{
+				"name": "Faculty Collaboration & Orchestra",
+				"start": "7:45",
+				"end": "8:45"
+			},
+			{
+				"name": "Extended Block",
+				"block": 1,
+				"isExtended": 1,
+				"start": "8:00",
+				"end": "8:45"
+			},
+			{
+				"name": "Class",
+				"block": 1,
+				"start": "8:45",
+				"end": "10:00"
+			},
+			{
+				"name": "Advisory",
+				"start": "10:00",
+				"end": "10:20"
+			},
+			{
+				"name": "Office Hours & Break",
+				"start": "10:20",
+				"end": "10:45"
+			},
+			{
+				"name": "Class",
+				"block": 2,
+				"start": "10:45",
+				"end": "12:00"
+			},
+			{
+				"name": "Lunch",
+				"start": "12:00",
+				"end": "12:45"
+			},
+			{
+				"name": "Class",
+				"block": 3,
+				"start": "12:45",
+				"end": "14:00"
+			},
+			{
+				"name": "Extended Block",
+				"block": 3,
+				"isExtended": 1,
+				"start": "14:00",
+				"end": "14:45"
+			},
+			{
+				"name": "X Block",
+				"start": "14:00",
+				"end": "14:45"
+			},
+			{
+				"name": "Opportunity Block",
+				"start": "14:45",
+				"end": "15:35"
+			}
+		],
+		[
+			{
+				"name": "Faculty Collaboration & Orchestra",
+				"start": "7:45",
+				"end": "8:45"
+			},
+			{
+				"name": "Extended Block",
+				"block": 1,
+				"isExtended": 1,
+				"start": "8:00",
+				"end": "8:45"
+			},
+			{
+				"name": "Class",
+				"block": 1,
+				"start": "8:45",
+				"end": "10:00"
+			},
+			{
+				"name": "Advisory",
+				"start": "10:00",
+				"end": "10:20"
+			},
+			{
+				"name": "Office Hours & Break",
+				"start": "10:20",
+				"end": "10:45"
+			},
+			{
+				"name": "Class",
+				"block": 2,
+				"start": "10:45",
+				"end": "12:00"
+			},
+			{
+				"name": "Lunch",
+				"start": "12:00",
+				"end": "12:45"
+			},
+			{
+				"name": "Chapel",
+				"start": "12:45",
+				"end": "13:35"
+			},
+			{
+				"name": "X Block",
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "Extended Block",
+				"block": 3,
+				"isExtended": 1,
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "Class",
+				"block": 3,
+				"start": "14:20",
+				"end": "15:35"
+			}
+		],
+		[
+			{
+				"name": "Faculty Collaboration & Orchestra",
+				"start": "7:45",
+				"end": "8:45"
+			},
+			{
+				"name": "Extended Block",
+				"block": 1,
+				"isExtended": 1,
+				"start": "8:00",
+				"end": "8:45"
+			},
+			{
+				"name": "Class",
+				"block": 1,
+				"start": "8:45",
+				"end": "10:00"
+			},
+			{
+				"name": "Advisory",
+				"start": "10:00",
+				"end": "10:20"
+			},
+			{
+				"name": "Office Hours & Break",
+				"start": "10:20",
+				"end": "10:45"
+			},
+			{
+				"name": "Class",
+				"block": 2,
+				"start": "10:45",
+				"end": "12:00"
+			},
+			{
+				"name": "Lunch",
+				"start": "12:00",
+				"end": "12:45"
+			},
+			{
+				"name": "Community Forum or Clubs",
+				"start": "12:45",
+				"end": "13:35"
+			},
+			{
+				"name": "Extended Block",
+				"block": 3,
+				"isExtended": 1,
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "X Block",
+				"start": "13:35",
+				"end": "14:20"
+			},
+			{
+				"name": "Class",
+				"block": 3,
+				"start": "14:20",
+				"end": "15:35"
+			}
+		],
+		[
+			{
+				"name": "Faculty Collaboration & Orchestra",
+				"start": "7:45",
+				"end": "8:45"
+			},
+			{
+				"name": "Extended Block",
+				"block": 1,
+				"isExtended": 1,
+				"start": "8:00",
+				"end": "8:45"
+			},
+			{
+				"name": "Class",
+				"block": 1,
+				"start": "8:45",
+				"end": "10:00"
+			},
+			{
+				"name": "Advisory",
+				"start": "10:00",
+				"end": "10:20"
+			},
+			{
+				"name": "Office Hours & Break",
+				"start": "10:20",
+				"end": "10:45"
+			},
+			{
+				"name": "Class",
+				"block": 2,
+				"start": "10:45",
+				"end": "12:00"
+			},
+			{
+				"name": "Lunch",
+				"start": "12:00",
+				"end": "12:45"
+			},
+			{
+				"name": "Class",
+				"block": 3,
+				"start": "12:45",
+				"end": "14:00"
+			},
+			{
+				"name": "Extended Block",
+				"block": 3,
+				"isExtended": 1,
+				"start": "14:00",
+				"end": "14:45"
+			},
+			{
+				"name": "X Block",
+				"start": "14:00",
+				"end": "14:45"
+			},
+			{
+				"name": "Opportunity Block",
+				"start": "14:45",
+				"end": "15:35"
+			}
+		]
+	]
 }

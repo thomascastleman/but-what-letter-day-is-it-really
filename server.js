@@ -14,17 +14,15 @@ app.engine('html', mustacheExpress());
 app.use('/', express.static('views'));
 
 var port = 8080;	// server port
+var SCHEDULE_PATH = './schedule.json';	// path to schedule serialization
 var schedule;	// daily schedule serialized in object
 var isLetterDay = /([ABCDEF])\s\(US\)\s(\d)-(\d)-(\d)/g;	// regular expression for extracting letter day info from ical response
 var isSpecialSched = /US\sSpecial\sSchedule\s(\d)-(\d)-(\d)/g;	// regular expression for extracting rotation from special schedule
 
-// read daily schedule serialization from file
-fs.readFile('./schedule.json', 'UTF8', function(err, data) {
+// on start, read daily schedule from file
+establishSchedule(function(err) {
 	// throw error if unable to find schedule.json file -- critical
-	if (err) throw new Error("Failed to read schedule.json: " + err.message);
-
-	// parse JSON into an object
-	schedule = JSON.parse(data);
+	if (err) throw new Error("Failed to read schedule serialization file: " + err.message);
 
 	// throw error if no calendar feed given
 	if (!creds.schoolEventsCalendar || creds.schoolEventsCalendar == '') {
@@ -359,7 +357,7 @@ app.post('/eventsByTime', function(req, res) {
 
 // fill out the skeleton schedule for a given weekday date, with a given rotation
 function fillSched(date, rotation) {
-	var skeleton = schedule.weekDays[date.weekday()];
+	var skeleton = schedule.weekDays[date.weekday() - 1];
 	var events = [];
 
 	// if schedule info exists for this date's weekday
@@ -371,8 +369,14 @@ function fillSched(date, rotation) {
 			// make copy of each event from skeleton with info filled in (dates relative to given date)
 			var eventCopy = {
 				name: event.name,
-				start: date.clone().startOf('day').add(event.start, 'minutes'),
-				end: date.clone().startOf('day').add(event.end, 'minutes')
+				start: date.clone().startOf('day').set({
+					hours: event.start.hours,
+					minutes: event.start.minutes
+				}),
+				end: date.clone().startOf('day').set({
+					hours: event.end.hours,
+					minutes: event.end.minutes
+				}),
 			};
 
 			// record event extended
@@ -399,3 +403,42 @@ function fillSched(date, rotation) {
 app.get('*', function(req, res) {
 	res.redirect('/letterToday');
 });
+
+// read daily schedule from file, parse as necessary
+function establishSchedule(cb) {
+	// read daily schedule serialization from filepath defined above
+	fs.readFile(SCHEDULE_PATH, 'UTF8', function(err, data) {
+		if (!err) {
+			// parse JSON string into an object
+			schedule = JSON.parse(data);
+
+			// for each week day
+			for (var i = 0; i < schedule.weekDays.length; i++) {
+				// for each event that day
+				for (var j = 0; j < schedule.weekDays[i].length; j++) {
+					var ev = schedule.weekDays[i][j];
+
+					// parse event start into object with hours and minutes as integers
+					var spl = ev.start.split(':');
+					ev.start = {
+						hours: parseInt(spl[0], 10),
+						minutes: parseInt(spl[1], 10)
+					};
+
+					// perform same formatting for event end
+					spl = ev.end.split(':');
+					ev.end = {
+						hours: parseInt(spl[0], 10),
+						minutes: parseInt(spl[1], 10)
+					};
+				}
+			}
+
+			// callback, as schedule is ready to be used
+			cb();
+		} else {
+			// callback on error given by fs
+			cb(err);
+		}
+	});
+}
