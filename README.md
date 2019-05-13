@@ -158,6 +158,55 @@ Sometimes, the school will run on an irregular rotation. In the case where the r
 
 Additionally, special schedules such as `Day B (US) 4-5-6 (US Special Half-Day B Schedule)` will also be parsed with an `isSpecial` of 1, even though a new rotation is not given. In this case, the regular Day B rotation would be used, but it is useful to know that the day is irregular.
 
+## A Note on the format of `schedule.json`
+
+The `schedule.json` file tells the service what the daily schedule for this schoolyear is. That is, what the sequence of daily events is for each *weekday*. Effectively, it's a JSON serialization of this:
+
+<img src="https://resources.finalsite.net/images/f_auto,q_auto,t_image_size_4/v1531764490/stab/plmvekohgtsibayi9g9p/USSchedule2018-2019.jpg" width="750">
+
+In JSON, this looks like:
+
+```
+{
+  "extendedPeriods": ["1", "4"],
+    "weekDays": [
+      [
+        {
+          "name": "Faculty Collaboration & Orchestra",
+	  "start": "7:45",
+	  "end": "8:45"
+	},
+	{
+	  "name": "Extended Block",
+	  "block": 1,
+	  "isExtended": 1,
+	  "start": "8:00",
+	  "end": "8:45"
+	},
+	{
+	  "name": "Class",
+	  "block": 1,
+	  "start": "8:45",
+	  "end": "10:00"
+	},
+	...
+      ],
+      ...
+    ]
+}
+```
+
+The `extendedPeriods` attribute is an array of each of the *periods* which are chosen to be extended that year. The `weekDays` attribute is an array of arrays, each which contain the events for a given weekday (i.e. `weekDays[0]` is Monday, then Tuesday, etc). 
+
+The events in each element of `weekDays` can have the following possible attributes, though not all will have all 5:
+
+- `"name"`: the friendly name of the event
+- `"block"`: the number representing the order of this class period during the day. For instance, if it is the third class occurring that day, it will have `"block": 3`. (class periods only)
+- `"isExtended"`: 1 or 0 based on whether or not this event represents an extension of a class period (i.e. morning American Studies from 8:00 to 8:45) (class periods only)
+- `"start"`: time of event start (in format "hours:minutes" using 24hr time)
+- `"end"`: time of event end (in format "hours:minutes" using 24hr time)
+
+
 ## Installation
 
 First, run `npm install` to install project dependencies. The software requires a `credentials.js` file with the following format: 
