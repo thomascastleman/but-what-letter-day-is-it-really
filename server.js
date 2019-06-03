@@ -14,7 +14,7 @@ app.engine('html', mustacheExpress());
 app.use('/', express.static('views'));
 
 var PORT = 8080;	// server port
-var SCHEDULE_PATH = './schedule.json';	// path to schedule serialization
+var SCHEDULE_PATH = __dirname + '/schedule.json';	// path to schedule serialization
 var schedule;	// daily schedule serialized in object
 
 // regular expression to match all event summaries that detail the US rotation / letter day (including special schedules)
